@@ -66,7 +66,7 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
     }
     if (call.method.equals("getPlatformVersion")) {
       try {
-        result.success("Android " + android.os.Build.VERSION.RELEASE);
+        result.success("Amazon Android " + android.os.Build.VERSION.RELEASE);
       } catch(IllegalStateException e){
         e.printStackTrace();
       }
