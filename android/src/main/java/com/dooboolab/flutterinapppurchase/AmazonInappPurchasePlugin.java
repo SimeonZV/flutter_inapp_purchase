@@ -20,16 +20,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -151,19 +150,24 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
           try {
             for (Map.Entry<String, Product> skuDetails : productData.entrySet()) {
               Product product=skuDetails.getValue();
-              NumberFormat format = NumberFormat.getCurrencyInstance();
 
-              Number number;
-              try {
-                number = format.parse(product.getPrice());
-              } catch (ParseException e) {
-                result.error(TAG, "Price Parsing error", e.getMessage());
-                return;
+
+              String priceString = product.getPrice();
+              Pattern p = Pattern.compile("[0-9]");
+              Matcher m = p.matcher(priceString);
+              String currency = null;
+              String price = null;
+              if (m.find()) {
+                String firstDigit = m.group();
+                int firstDigitIndex = priceString.indexOf(firstDigit);
+                currency = priceString.substring(0, firstDigitIndex);
+                price = priceString.substring(firstDigitIndex);
               }
+
               JSONObject item = new JSONObject();
               item.put("productId", product.getSku());
-              item.put("price", number.toString());
-              item.put("currency", null);
+              item.put("price", price);
+              item.put("currency", currency);
               ProductType productType = product.getProductType();
               switch (productType) {
                 case ENTITLED:
