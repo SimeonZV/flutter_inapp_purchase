@@ -217,9 +217,9 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
           Long transactionDate=date.getTime();
           try {
             JSONObject item = getPurchaseData(receipt.getSku(),
+                  response.getRequestId().toString(),
                   receipt.getReceiptId(),
-                  receipt.getReceiptId(),
-                  transactionDate.doubleValue());
+                  transactionDate);
             Log.d(TAG, "opr Putting "+item.toString());
             result.success(item.toString());
             channel.invokeMethod("purchase-updated", item.toString());
@@ -248,9 +248,9 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
               Date date = receipt.getPurchaseDate();
               Long transactionDate=date.getTime();
               JSONObject item = getPurchaseData(receipt.getSku(),
+                      response.getRequestId().toString(),
                       receipt.getReceiptId(),
-                      receipt.getReceiptId(),
-                      transactionDate.doubleValue());
+                      transactionDate);
 
               Log.d(TAG, "opudr Putting "+item.toString());
               items.put(item);
@@ -272,12 +272,12 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
   };
 
   JSONObject getPurchaseData(String productId, String transactionId, String transactionReceipt,
-                             Double transactionDate) throws JSONException {
+                             Long transactionDate) throws JSONException {
     JSONObject item = new JSONObject();
     item.put("productId", productId);
     item.put("transactionId", transactionId);
     item.put("transactionReceipt", transactionReceipt);
-    item.put("transactionDate", Double.toString(transactionDate));
+    item.put("transactionDate", Long.toString(transactionDate));
     item.put("dataAndroid",null);
     item.put("signatureAndroid",null);
     item.put("purchaseToken",null);
