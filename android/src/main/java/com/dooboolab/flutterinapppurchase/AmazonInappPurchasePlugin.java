@@ -261,7 +261,6 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
 
               Log.d(TAG, "opudr Putting "+item.toString());
               items.put(item);
-              channel.invokeMethod("purchase-updated", item);
             }
             result.success(items.toString());
           } catch (JSONException e) {
