@@ -118,6 +118,9 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
     } else if (call.method.equals("consumeProduct")) {
       // consumable is a separate type in amazon
       result.success("no-ops in amazon");
+    } else if (call.method.equals("acknowledgePurchase")) {
+        // consumable is a separate type in amazon
+        result.success("no-ops in amazon");
     } else {
       result.notImplemented();
     }
