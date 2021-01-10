@@ -1,9 +1,8 @@
 package com.dooboolab.flutterinapppurchase;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
-import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -27,8 +26,8 @@ public class FlutterInappPurchasePlugin implements FlutterPlugin, ActivityAware 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
     context = binding.getApplicationContext();
-    isAndroid = isPackageInstalled(context, "com.android.vending");
-    isAmazon = isPackageInstalled(context, "com.amazon.venezia");
+    isAndroid = isPackageInstalledAndEnabled(context, "com.android.vending");
+    isAmazon = isPackageInstalledAndEnabled(context, "com.amazon.venezia");
 
     if (isAndroid) {
       androidInappPurchasePlugin = new AndroidInappPurchasePlugin();
@@ -46,9 +45,9 @@ public class FlutterInappPurchasePlugin implements FlutterPlugin, ActivityAware 
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    if (isPackageInstalled(context, "com.android.vending")) {
+    if (isPackageInstalledAndEnabled(context, "com.android.vending")) {
       tearDownChannel();
-    } else if(isPackageInstalled(context, "com.amazon.venezia")) {
+    } else if(isPackageInstalledAndEnabled(context, "com.amazon.venezia")) {
       tearDownChannel();
     }
   }
@@ -75,19 +74,19 @@ public class FlutterInappPurchasePlugin implements FlutterPlugin, ActivityAware 
 
   @Override
   public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-    if (isPackageInstalled(context, "com.android.vending")) {
+    if (isPackageInstalledAndEnabled(context, "com.android.vending")) {
       androidInappPurchasePlugin.setActivity(binding.getActivity());
-    } else if(isPackageInstalled(context, "com.amazon.venezia")) {
+    } else if(isPackageInstalledAndEnabled(context, "com.amazon.venezia")) {
       amazonInappPurchasePlugin.setActivity(binding.getActivity());
     }
   }
 
   @Override
   public void onDetachedFromActivity() {
-    if (isPackageInstalled(context, "com.android.vending")) {
+    if (isPackageInstalledAndEnabled(context, "com.android.vending")) {
       androidInappPurchasePlugin.setActivity(null);
       androidInappPurchasePlugin.onDetachedFromActivity();
-    } else if(isPackageInstalled(context, "com.amazon.venezia")) {
+    } else if(isPackageInstalledAndEnabled(context, "com.amazon.venezia")) {
       amazonInappPurchasePlugin.setActivity(null);
     }
   }
@@ -102,13 +101,13 @@ public class FlutterInappPurchasePlugin implements FlutterPlugin, ActivityAware 
     onDetachedFromActivity();
   }
 
-  private static boolean isPackageInstalled(Context ctx, String packageName) {
+  private static boolean isPackageInstalledAndEnabled(Context ctx, String packageName) {
     try {
-      ctx.getPackageManager().getPackageInfo(packageName, 0);
+      PackageInfo packageInfo = ctx.getPackageManager().getPackageInfo(packageName, 0);
+      return packageInfo.applicationInfo.enabled;
     } catch (PackageManager.NameNotFoundException e) {
       return false;
     }
-    return true;
   }
 
   private void setupMethodChannel(BinaryMessenger messenger, MethodChannel.MethodCallHandler handler) {
