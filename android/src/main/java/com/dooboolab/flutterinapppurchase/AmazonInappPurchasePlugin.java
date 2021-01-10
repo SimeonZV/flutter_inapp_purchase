@@ -215,10 +215,11 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
           PurchasingService.notifyFulfillment(receipt.getReceiptId(), FulfillmentResult.FULFILLED);
           Date date = receipt.getPurchaseDate();
           Long transactionDate=date.getTime();
+          String userId = response.getUserData().getUserId();
           try {
             JSONObject item = getPurchaseData(receipt.getSku(),
                   response.getRequestId().toString(),
-                  receipt.getReceiptId(),
+                  "user/" + userId + "/receiptId/" + receipt.getReceiptId(),
                   transactionDate);
             Log.d(TAG, "opr Putting "+item.toString());
             result.success(item.toString());
@@ -247,9 +248,10 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
             for(Receipt receipt : receipts) {
               Date date = receipt.getPurchaseDate();
               Long transactionDate=date.getTime();
+              String userId = response.getUserData().getUserId();
               JSONObject item = getPurchaseData(receipt.getSku(),
                       response.getRequestId().toString(),
-                      receipt.getReceiptId(),
+                      "user/" + userId + "/receiptId/" + receipt.getReceiptId(),
                       transactionDate);
 
               Log.d(TAG, "opudr Putting "+item.toString());
