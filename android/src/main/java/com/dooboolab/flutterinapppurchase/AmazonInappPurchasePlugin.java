@@ -233,7 +233,7 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
             result.error(TAG, "E_BILLING_RESPONSE_JSON_PARSE_ERROR", e.getMessage());
           }
           break;
-        case FAILED:
+        default:
           result.error(TAG, "buyItemByType", "billingResponse is not ok: " + status);
           break;
       }
@@ -267,12 +267,8 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
             result.error(TAG, "E_BILLING_RESPONSE_JSON_PARSE_ERROR", e.getMessage());
           }
           break;
-        case FAILED:
-          result.error(TAG,"FAILED",null);
-          break;
-        case NOT_SUPPORTED:
-          Log.d(TAG, "onPurchaseUpdatesResponse: failed, should retry request");
-          result.error(TAG,"NOT_SUPPORTED",null);
+        default:
+          result.error(TAG, "getAvailableItemsByType", "billingResponse is not ok: " + status);
           break;
       }
     }
