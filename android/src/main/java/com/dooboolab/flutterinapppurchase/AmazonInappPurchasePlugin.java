@@ -184,8 +184,13 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
               item.put("introductoryPrice", "");
               item.put("subscriptionPeriodAndroid", "");
               item.put("freeTrialPeriodAndroid", "");
-              item.put("introductoryPriceCyclesAndroid", "");
+              item.put("introductoryPriceCyclesAndroid", 0);
               item.put("introductoryPricePeriodAndroid", "");
+              // new
+              item.put("iconUrl", "");
+              item.put("originalJson", "");
+              item.put("originalPrice", 0);
+
               Log.d(TAG, "opdr Putting "+item.toString());
               items.put(item);
             }
