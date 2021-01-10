@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -154,23 +152,11 @@ public class AmazonInappPurchasePlugin implements MethodCallHandler {
             for (Map.Entry<String, Product> skuDetails : productData.entrySet()) {
               Product product=skuDetails.getValue();
 
-
-              String priceString = product.getPrice();
-              Pattern p = Pattern.compile("[0-9]");
-              Matcher m = p.matcher(priceString);
-              String currency = null;
-              String price = null;
-              if (m.find()) {
-                String firstDigit = m.group();
-                int firstDigitIndex = priceString.indexOf(firstDigit);
-                currency = priceString.substring(0, firstDigitIndex);
-                price = priceString.substring(firstDigitIndex);
-              }
-
+              // only localizedPrice is provided by Amazon
               JSONObject item = new JSONObject();
               item.put("productId", product.getSku());
-              item.put("price", price);
-              item.put("currency", currency);
+              item.put("price", "");
+              item.put("currency", "");
               ProductType productType = product.getProductType();
               switch (productType) {
                 case ENTITLED:
